@@ -1,6 +1,6 @@
 import java.awt.Color
 
-case class Triangle(v1: Vertex3, v2: Vertex3, v3: Vertex3, color: Color)
+case class Triangle(v1: Vertex4, v2: Vertex4, v3: Vertex4, color: Color)
 
 object Triangle {
     /**
@@ -12,7 +12,7 @@ object Triangle {
       * @param p arbitrary point
       * @return true if p is within the triangle
       */
-    def sameSide(a: Vertex3, b: Vertex3, c: Vertex3, p: Vertex3): Boolean = {
+    def sameSide(a: Vertex4, b: Vertex4, c: Vertex4, p: Vertex4): Boolean = {
         val ab = b - a
         val ac = c - a
         val ap = p - a
@@ -20,7 +20,7 @@ object Triangle {
         (ab cross ac).z * (ab cross ap).z >= 0
     }
 
-    def pointInTriangle(a: Vertex3, b: Vertex3, c: Vertex3, p: Vertex3): Boolean = {
+    def pointInTriangle(a: Vertex4, b: Vertex4, c: Vertex4, p: Vertex4): Boolean = {
         sameSide(a, b, c, p) &&
         sameSide(b, c, a, p) &&
         sameSide(c, a, b, p)

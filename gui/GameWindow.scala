@@ -26,7 +26,7 @@ class RenderPanel() extends JPanel {
 
     private val tris = createTetrahedron()
 
-    private val lightSource = LightSource(Vertex3(0, 0, Integer.MIN_VALUE), Vertex3(0, 0, 1))
+    private val lightSource = DirectionalLight(Vertex4(0,0,1, 0), 1)
 
     override def paintComponent(g: Graphics): Unit = {
         super.paintComponent(g)
@@ -43,7 +43,7 @@ class RenderPanel() extends JPanel {
 
         val dx = Math.toRadians(angles.heading)
         val dy = Math.toRadians(angles.pitch)
-        val transform = Matrix3.heading(dx) * Matrix3.pitch(dy)
+        val transform = Matrix4.roll(dx) * Matrix4.pitch(dy)
 
         // Z buffer
         val zBuffer: Array[Double] = Array.fill(height*width)(Double.MinValue)
@@ -68,7 +68,7 @@ class RenderPanel() extends JPanel {
 
             for (y <- minY until maxY) {
                 for (x <- minX until maxX) {
-                    val p = new Vertex3(x, y, 0)
+                    val p = Vertex4(x, y, 0, 0)
                     if (Triangle.pointInTriangle(v1, v2, v3, p)) {
                         val depth = (v1.z + v2.z + v3.z) / 3
                         val zIndex = y * imgWidth + x
@@ -121,21 +121,21 @@ class RenderPanel() extends JPanel {
 
     private def createTetrahedron(): ArrayList[Triangle] = {
         val tris = new ArrayList[Triangle]()
-        tris.add(new Triangle(new Vertex3(100, 100, 100),
-                            new Vertex3(-100, -100, 100),
-                            new Vertex3(-100, 100, -100),
+        tris.add(new Triangle(new Vertex4(100, 100, 100, 1),
+                            new Vertex4(-100, -100, 100, 1),
+                            new Vertex4(-100, 100, -100, 1),
                             Color.WHITE))
-        tris.add(new Triangle(new Vertex3(100, 100, 100),
-                            new Vertex3(-100, -100, 100),
-                            new Vertex3(100, -100, -100),
+        tris.add(new Triangle(new Vertex4(100, 100, 100, 1),
+                            new Vertex4(-100, -100, 100, 1),
+                            new Vertex4(100, -100, -100, 1),
                             Color.RED))
-        tris.add(new Triangle(new Vertex3(-100, 100, -100),
-                            new Vertex3(100, -100, -100),
-                            new Vertex3(100, 100, 100),
+        tris.add(new Triangle(new Vertex4(-100, 100, -100, 1),
+                            new Vertex4(100, -100, -100, 1),
+                            new Vertex4(100, 100, 100, 1),
                             Color.GREEN))
-        tris.add(new Triangle(new Vertex3(-100, 100, -100),
-                            new Vertex3(100, -100, -100),
-                            new Vertex3(-100, -100, 100),
+        tris.add(new Triangle(new Vertex4(-100, 100, -100, 1),
+                            new Vertex4(100, -100, -100, 1),
+                            new Vertex4(-100, -100, 100, 1),
                             Color.BLUE))
         tris
     }
