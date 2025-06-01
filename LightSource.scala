@@ -1,0 +1,1 @@
+case class LightSource(pos: Vertex3, direction: Vertex3)

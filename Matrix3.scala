@@ -13,8 +13,8 @@ class Matrix3(val values: Array[Double]) {
         Matrix3(result);
     }
 
-    infix def transform(in: Vertex) = {
-        Vertex(in.x * values(0) + in.y * values(3) + in.z * values(6),
+    infix def transform(in: Vertex3) = {
+        Vertex3(in.x * values(0) + in.y * values(3) + in.z * values(6),
                in.x * values(1) + in.y * values(4) + in.z * values(7),
                in.x * values(2) + in.y * values(5) + in.z * values(8))
     }

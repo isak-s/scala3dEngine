@@ -1,0 +1,15 @@
+case class Vertex3(var x: Double, var y: Double, var z: Double) {
+    infix def cross(o: Vertex3): Vertex3 = Vertex3(y * o.z - z * o.y, z * o.x - x * o.z, x * o.y - y * o.x)
+
+    infix def dot(o: Vertex3): Double = x * o.x + y * o.y + z* o.z
+
+    infix def +(v: Vertex3): Vertex3 = Vertex3(x + v.x, y + v.y, z + v.z)
+
+    infix def -(v: Vertex3): Vertex3 = Vertex3(x - v.x, y - v.y, z - v.z)
+
+    infix def *(s: Double): Vertex3 = Vertex3(x * s, y * s, z * s)
+
+    def magnitude: Double = math.sqrt(this dot this)
+
+    def normalize: Vertex3 = this * (1.0 / magnitude)
+}
