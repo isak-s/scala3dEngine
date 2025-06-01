@@ -4,6 +4,7 @@ import java.util.ArrayList
 import java.awt.geom.Path2D
 import java.awt.event.MouseMotionListener
 import java.awt.event.MouseEvent
+import java.awt.image.BufferedImage
 class GameWindow {
 
     def launch(): Unit = {
@@ -28,30 +29,49 @@ class RenderPanel() extends JPanel {
     override def paintComponent(g: Graphics): Unit = {
         super.paintComponent(g)
         val g2 = g.asInstanceOf[Graphics2D]
-        g2.setColor(Color.BLACK)
-        g2.fillRect(0, 0, getWidth, getHeight)
 
-        g2.translate(getWidth / 2, getHeight / 2)
+        val width = getWidth()
+        val height = getHeight()
+
+        // Black background
+        val img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB)
+        val gImg = img.createGraphics()
+        gImg.setColor(Color.BLACK)
+        gImg.fillRect(0, 0, width, height)
 
         val dx = Math.toRadians(angles.heading)
         val dy = Math.toRadians(angles.pitch)
         val transform = Matrix3.heading(dx) * Matrix3.pitch(dy)
 
         tris.forEach { t =>
-            // Rotate points
+            // Transform vertices
             val v1 = transform.transform(t.v1)
             val v2 = transform.transform(t.v2)
             val v3 = transform.transform(t.v3)
 
-            val path = new Path2D.Double()
-            path.moveTo(v1.x, v1.y)
-            path.lineTo(v2.x, v2.y)
-            path.lineTo(v3.x, v3.y)
-            path.closePath()
-            g2.setColor(t.color)
-            g2.draw(path)
+            // Move into screen space
+            v1.x += width / 2.0; v1.y += height / 2.0
+            v2.x += width / 2.0; v2.y += height / 2.0
+            v3.x += width / 2.0; v3.y += height / 2.0
+
+            val minX = Math.max(0, Math.ceil(Math.min(v1.x, Math.min(v2.x, v3.x)))).toInt
+            val maxX = Math.min(width - 1, Math.floor(Math.max(v1.x, Math.max(v2.x, v3.x)))).toInt
+            val minY = Math.max(0, Math.ceil(Math.min(v1.y, Math.min(v2.y, v3.y)))).toInt
+            val maxY = Math.min(height - 1, Math.floor(Math.max(v1.y, Math.max(v2.y, v3.y)))).toInt
+
+            for (y <- minY until maxY) {
+                for (x <- minX until maxX) {
+                    val p = new Vertex(x, y, 0)
+                    if (Triangle.pointInTriangle(v1, v2, v3, p)) {
+                        img.setRGB(x, y, t.color.getRGB())
+                    }
+                }
             }
         }
+
+        g2.drawImage(img, 0, 0, null)
+    }
+
 
     addMouseMotionListener(new MouseMotionListener {
         override def mouseDragged(e: MouseEvent): Unit = {

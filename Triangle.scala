@@ -12,11 +12,24 @@ object Triangle {
       * @param p arbitrary point
       * @return true if p is within the triangle
       */
+    // def sameSide(a: Vertex, b: Vertex, c: Vertex, p: Vertex): Boolean = {
+    //     val ab = b - a
+    //     val ac = c - a
+    //     val ap = p - a
+
+    //     ((ab cross ac) dot (ab cross ap)) >= 0
+    // }
     def sameSide(a: Vertex, b: Vertex, c: Vertex, p: Vertex): Boolean = {
         val ab = b - a
         val ac = c - a
         val ap = p - a
 
-        ((ab cross ac) dot (ab cross ap)) >= 0
+        (ab cross ac).z * (ab cross ap).z >= 0
+    }
+
+    def pointInTriangle(a: Vertex, b: Vertex, c: Vertex, p: Vertex): Boolean = {
+        Triangle.sameSide(a, b, c, p) &&
+        Triangle.sameSide(b, c, a, p) &&
+        Triangle.sameSide(c, a, b, p)
     }
 }

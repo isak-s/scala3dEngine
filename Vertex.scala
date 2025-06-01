@@ -1,4 +1,4 @@
-case class Vertex(x: Double, y: Double, z: Double) {
+case class Vertex(var x: Double, var y: Double, var z: Double) {
     infix def cross(o: Vertex): Vertex = Vertex(y * o.z - z * o.y, z * o.x - x * o.z, x * o.y - y * o.x)
 
     infix def dot(o: Vertex): Double = x * o.x + y * o.y + z* o.z
