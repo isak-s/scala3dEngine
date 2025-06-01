@@ -1,0 +1,1 @@
+case class Vertex(x: Double, y: Double, z: Double)
