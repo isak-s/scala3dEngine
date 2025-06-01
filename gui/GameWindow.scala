@@ -43,6 +43,9 @@ class RenderPanel() extends JPanel {
         val dy = Math.toRadians(angles.pitch)
         val transform = Matrix3.heading(dx) * Matrix3.pitch(dy)
 
+        // Z buffer
+        val zBuffer: Array[Double] = Array.fill(height*width)(Double.MinValue)
+
         tris.forEach { t =>
             // Transform vertices
             val v1 = transform.transform(t.v1)
@@ -63,7 +66,13 @@ class RenderPanel() extends JPanel {
                 for (x <- minX until maxX) {
                     val p = new Vertex(x, y, 0)
                     if (Triangle.pointInTriangle(v1, v2, v3, p)) {
-                        img.setRGB(x, y, t.color.getRGB())
+                        val depth = (v1.z + v2.z + v3.z) / 3
+                        val zIndex = y * img.getWidth() + x
+                        if (zBuffer(zIndex) < depth) {
+                            img.setRGB(x, y, t.color.getRGB())
+                            zBuffer.update(zIndex, depth)
+                        }
+
                     }
                 }
             }
