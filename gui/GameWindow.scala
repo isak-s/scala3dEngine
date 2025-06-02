@@ -25,7 +25,9 @@ class RenderPanel() extends JPanel {
 
     private val angles = new Angles
 
-    private val tris = createTetrahedron()
+    private val globe = Globe(Vertex4(0,0,0,1)).scaled(5)
+
+    private val bodies = ArrayBuffer(globe)
 
     private val lightSource = DirectionalLight(Vertex4(0,0,1, 0), 1)
 
@@ -49,7 +51,7 @@ class RenderPanel() extends JPanel {
         // Z buffer
         val zBuffer: Array[Double] = Array.fill(height*width)(Double.MinValue)
 
-        tris.foreach { t =>
+        bodies.foreach { b => b.tris.foreach { t =>
             // Transform vertices
             val v1 = transform.transform(t.v1)
             val v2 = transform.transform(t.v2)
@@ -90,6 +92,7 @@ class RenderPanel() extends JPanel {
 
         g2.drawImage(img, 0, 0, null)
     }
+    }
 
 
     addMouseMotionListener(new MouseMotionListener {
@@ -120,25 +123,4 @@ class RenderPanel() extends JPanel {
         new Color(red, green, blue);
 }
 
-    private def createTetrahedron(): ArrayBuffer[Triangle] = {
-        val tris = new ArrayBuffer[Triangle]()
-        tris += new Triangle(new Vertex4(100, 100, 100, 1),
-                            new Vertex4(-100, -100, 100, 1),
-                            new Vertex4(-100, 100, -100, 1),
-                            Color.WHITE)
-        tris += new Triangle(new Vertex4(100, 100, 100, 1),
-                            new Vertex4(-100, -100, 100, 1),
-                            new Vertex4(100, -100, -100, 1),
-                            Color.RED)
-        tris += new Triangle(new Vertex4(-100, 100, -100, 1),
-                            new Vertex4(100, -100, -100, 1),
-                            new Vertex4(100, 100, 100, 1),
-                            Color.GREEN)
-        tris += new Triangle(new Vertex4(-100, 100, -100, 1),
-                            new Vertex4(100, -100, -100, 1),
-                            new Vertex4(-100, -100, 100, 1),
-                            Color.BLUE)
-        Triangle.expandTriangles(Triangle.expandTriangles(Triangle.expandTriangles(Triangle.expandTriangles(tris))))
-        //tris
-    }
 }
