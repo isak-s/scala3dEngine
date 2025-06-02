@@ -5,6 +5,7 @@ import java.awt.geom.Path2D
 import java.awt.event.MouseMotionListener
 import java.awt.event.MouseEvent
 import java.awt.image.BufferedImage
+import scala.collection.mutable.ArrayBuffer
 class GameWindow {
 
     def launch(): Unit = {
@@ -48,7 +49,7 @@ class RenderPanel() extends JPanel {
         // Z buffer
         val zBuffer: Array[Double] = Array.fill(height*width)(Double.MinValue)
 
-        tris.forEach { t =>
+        tris.foreach { t =>
             // Transform vertices
             val v1 = transform.transform(t.v1)
             val v2 = transform.transform(t.v2)
@@ -119,24 +120,25 @@ class RenderPanel() extends JPanel {
         new Color(red, green, blue);
 }
 
-    private def createTetrahedron(): ArrayList[Triangle] = {
-        val tris = new ArrayList[Triangle]()
-        tris.add(new Triangle(new Vertex4(100, 100, 100, 1),
+    private def createTetrahedron(): ArrayBuffer[Triangle] = {
+        val tris = new ArrayBuffer[Triangle]()
+        tris += new Triangle(new Vertex4(100, 100, 100, 1),
                             new Vertex4(-100, -100, 100, 1),
                             new Vertex4(-100, 100, -100, 1),
-                            Color.WHITE))
-        tris.add(new Triangle(new Vertex4(100, 100, 100, 1),
+                            Color.WHITE)
+        tris += new Triangle(new Vertex4(100, 100, 100, 1),
                             new Vertex4(-100, -100, 100, 1),
                             new Vertex4(100, -100, -100, 1),
-                            Color.RED))
-        tris.add(new Triangle(new Vertex4(-100, 100, -100, 1),
+                            Color.RED)
+        tris += new Triangle(new Vertex4(-100, 100, -100, 1),
                             new Vertex4(100, -100, -100, 1),
                             new Vertex4(100, 100, 100, 1),
-                            Color.GREEN))
-        tris.add(new Triangle(new Vertex4(-100, 100, -100, 1),
+                            Color.GREEN)
+        tris += new Triangle(new Vertex4(-100, 100, -100, 1),
                             new Vertex4(100, -100, -100, 1),
                             new Vertex4(-100, -100, 100, 1),
-                            Color.BLUE))
-        tris
+                            Color.BLUE)
+        Triangle.expandTriangles(Triangle.expandTriangles(Triangle.expandTriangles(Triangle.expandTriangles(tris))))
+        //tris
     }
 }

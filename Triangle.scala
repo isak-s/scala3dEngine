@@ -1,4 +1,6 @@
 import java.awt.Color
+import java.util.ArrayList
+import scala.collection.mutable.ArrayBuffer
 
 case class Triangle(v1: Vertex4, v2: Vertex4, v3: Vertex4, color: Color)
 
@@ -24,5 +26,38 @@ object Triangle {
         sameSide(a, b, c, p) &&
         sameSide(b, c, a, p) &&
         sameSide(c, a, b, p)
+    }
+
+    def expandTriangles(triangles: ArrayBuffer[Triangle]): ArrayBuffer[Triangle] = {
+
+        def triangleRadius(t: Triangle): Double = {
+            val center = Vertex4.midPoint(t.v1, t.v2, t.v3)
+            math.sqrt(center dot center)
+        }
+
+        val radius = triangleRadius(triangles(0))
+
+        val result = triangles.flatMap(t => {
+            val m1 = Vertex4.midPoint(t.v1, t.v2)
+            val m2 = Vertex4.midPoint(t.v1, t.v3)
+            val m3 = Vertex4.midPoint(t.v2, t.v3)
+            Array(
+            Triangle(t.v1, m1, m2, t.color),
+            Triangle(t.v2, m1, m3, t.color),
+            Triangle(t.v3, m2, m3, t.color),
+            Triangle(m1, m2, m3, t.color))
+        })
+
+        result.foreach(t => {
+            for (v <- Seq(t.v1, t.v2, t.v3)) {
+                val currentLength = math.sqrt(v.x * v.x + v.y * v.y + v.z * v.z)
+                val scale = currentLength / radius
+                v.x /= scale
+                v.y /= scale
+                v.z /= scale
+            }
+        })
+
+        result
     }
 }
