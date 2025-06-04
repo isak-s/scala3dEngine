@@ -8,7 +8,7 @@ class GameWindow {
         SwingUtilities.invokeLater(() => {
             val frame = new JFrame("Scala 3d engine")
             frame.setDefaultCloseOperation(3) //JFrame.EXIT_ON_CLOSE
-            frame.setSize(600, 600)
+            frame.setSize(16 * 100, 9 * 100)
             frame.add(new RenderPanel(), BorderLayout.CENTER)
             frame.setVisible(true)
         })

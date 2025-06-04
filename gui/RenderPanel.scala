@@ -60,8 +60,8 @@ class RenderPanel() extends JPanel {
 
             val imgWidth = img.getWidth()
 
-            for (y <- minY until maxY) {
-                for (x <- minX until maxX) {
+            for (y <- minY to maxY) {
+                for (x <- minX to maxX) {
                     val p = Vertex4(x, y, 0, 0)
                     if (Triangle.pointInTriangle(v1, v2, v3, p)) {
                         val depth = (v1.z + v2.z + v3.z) / 3
