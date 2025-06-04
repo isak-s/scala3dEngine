@@ -15,10 +15,12 @@ trait Body() {
 
     def scaled(scale: Double) = this match {
         case Tetrahedron(pos, _) =>
-            Tetrahedron(pos * scale, this * scale)
+            Tetrahedron(pos, this * scale)
         case Globe(pos, _) =>
-            Globe(pos * scale, this * scale)
+            Globe(pos, this * scale)
     }
+    // transforms from local space to world space
+    def modelMatrix = Matrix4.translation(pos.x, pos.y, pos.z)
 }
 
 object Body {

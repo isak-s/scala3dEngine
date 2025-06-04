@@ -6,13 +6,24 @@ import javax.swing.JPanel
 
 class ViewMouseMotionListener(using component: JPanel, angles: Angles) extends MouseMotionListener {
 
-    override def mouseDragged(e: MouseEvent): Unit = {
-    val xi = 180.0 / (component.getWidth /100)
-    val yi = 180.0 / (component.getHeight /100)
-    angles.heading = e.getX * xi
-    angles.pitch = -e.getY * yi
-    component.repaint()
+    var lastX = 0
+    var lastY = 0
 
+    override def mouseDragged(e: MouseEvent): Unit = {
+
+        val deltaX = e.getX - lastX
+        val deltaY = e.getY - lastY
+        lastX = e.getX
+        lastY = e.getY
+
+        angles.yaw += deltaX * 0.5   // sensitivity factor
+        angles.pitch += deltaY * 0.5
+
+        // clamp pitch to avoid flipping over
+        if (angles.pitch > 89) angles.pitch = 89
+        if (angles.pitch < -89) angles.pitch = -89
+
+        component.repaint()
     }
 
     override def mouseMoved(e: MouseEvent): Unit = {}

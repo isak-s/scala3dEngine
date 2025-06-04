@@ -14,5 +14,3 @@ class GameWindow {
         })
     }
 }
-
-case class Angles(var pitch: Double = 0.0, var heading: Double = 0.0)

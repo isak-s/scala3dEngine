@@ -1,20 +1,17 @@
 case class Camera(
     var position: Vertex4,
-    var pitch: Double,
-    var yaw: Double,
-    var roll: Double = 0.0,
-
-    var fov: Double = 60.0,  // degrees
-    var aspectRatio: Double = 1.0,  // width/height
+    var fovY: Double = Camera.degToRad(58),
+    var aspectRatio: Double = 16 / 9,  // width/height
     var near: Double = 0.1,
     var far: Double = 1000.0
-) {
+)(using angles: Angles) {
+
     def forward: Vertex4 = {
         // Calculate forward vector from pitch and yaw
-        val cosPitch = math.cos(math.toRadians(pitch))
-        val sinPitch = math.sin(math.toRadians(pitch))
-        val cosYaw = math.cos(math.toRadians(yaw))
-        val sinYaw = math.sin(math.toRadians(yaw))
+        val cosPitch = math.cos(math.toRadians(angles.pitch))
+        val sinPitch = math.sin(math.toRadians(angles.pitch))
+        val cosYaw = math.cos(math.toRadians(angles.yaw))
+        val sinYaw = math.sin(math.toRadians(angles.yaw))
 
         Vertex4(
             sinYaw * cosPitch,
@@ -32,4 +29,15 @@ case class Camera(
     def up: Vertex4 = {
         right cross forward
     }
+
+    def fovX: Double = {
+        2 * math.atan(aspectRatio * math.tan(fovY / 2))
+    }
 }
+
+object Camera {
+    def degToRad(deg: Double): Double = deg * Math.PI / 180.0
+    def radToDeg(rad: Double): Double = rad * 180.0 / Math.PI
+}
+
+case class Angles(var pitch: Double = 0.0, var yaw: Double = 0.0, var roll: Double = 0.0)

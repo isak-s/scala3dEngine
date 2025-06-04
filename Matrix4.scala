@@ -84,4 +84,40 @@ object Matrix4 {
     ))
   }
 
+  def perspectiveProjection(using c: Camera) = {
+    // Convert world space to view space before
+
+    val f = 1.0 / Math.tan(c.fovY / 2.0)
+    val nf = 1.0 / (c.near - c.far)
+
+    Matrix4(Array(
+      f / c.aspectRatio, 0, 0, 0,
+      0, f, 0, 0,
+      0, 0, (c.far + c.near) * nf, (2 * c.far * c.near) * nf,
+      0, 0, -1, 0
+    ))
+
+  }
+  // Translation matrix (camera position)
+  private def camTranslation(using c: Camera): Matrix4 = {
+    val p = c.position
+    translation(-p.x, -p.y, -p.z)
+  }
+
+  def viewMatrix(using c: Camera): Matrix4 = {
+    val f = c.forward
+    val r = c.right
+    val u = c.up
+    val p = c.position
+
+    // Rotation matrix (camera orientation)
+    val rot = Matrix4(Array(
+      r.x, u.x, -f.x, 0,
+      r.y, u.y, -f.y, 0,
+      r.z, u.z, -f.z, 0,
+      0,   0,   0,    1
+    ))
+
+    rot * camTranslation
+  }
 }
