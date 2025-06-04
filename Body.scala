@@ -18,9 +18,7 @@ trait Body() {
             Tetrahedron(pos * scale, this * scale)
         case Globe(pos, _) =>
             Globe(pos * scale, this * scale)
-}
-
-
+    }
 }
 
 object Body {
@@ -29,8 +27,9 @@ object Body {
 
 case class Tetrahedron(pos: Vertex4, tris: ArrayBuffer[Triangle] = createTetrahedron()) extends Body
 
-case class Globe(pos: Vertex4, tris: ArrayBuffer[Triangle] = createGlobe())
-    extends Body
+case class Globe(pos: Vertex4, tris: ArrayBuffer[Triangle] = createGlobe()) extends Body
+
+// case class KochTetrahedron()
 
 private def createGlobe(): ArrayBuffer[Triangle] = {
     Triangle.expandTriangles(
@@ -60,6 +59,5 @@ private def createTetrahedron(): ArrayBuffer[Triangle] = {
                         new Vertex4(100, -100, -100, 1),
                         new Vertex4(-100, -100, 100, 1),
                         Color.BLUE)
-    // Triangle.expandTriangles(Triangle.expandTriangles(Triangle.expandTriangles(Triangle.expandTriangles(tris))))
     tris
 }
